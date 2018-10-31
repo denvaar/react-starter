@@ -24,7 +24,9 @@ const calculateCost = (month, plan) => {
 }
 
 const calculateEventCost = (rawCost, plan) => {
-  return plan.totalCost >= plan.ded ? 0 : rawCost
+  if (rawCost + plan.totalCost >= plan.ded) { console.log('yo'); return plan.ded - plan.totalCost }
+  if (plan.totalCost >= plan.ded) return 0
+  return rawCost
 }
 
 const calculateTotal = (months, plan) => {
@@ -56,16 +58,25 @@ function getRelativeCoordinates (event, element) {
   return { x: position.x - offset.left, y: position.y - offset.top }
 }
 
+const events = [
+  { name: 'Doctor visit', cost: 50 },
+  { name: 'New baby', cost: 6000 },
+  { name: 'Emergency room visit', cost: 3000 },
+  { name: 'Perscription Medicine', cost: 500 },
+]
+
 class App extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
+      cost: 50,
       availablePlans: [
         {
           name: 'Aetna Bronze Plan',
           premium: 0,
-          ded: 300,
+          ded: 5000,
+          max: 6000,
           totalCost: 0,
           id: 1
         },
@@ -73,6 +84,7 @@ class App extends React.Component {
           name: 'Aetna Silver Plan',
           premium: 150,
           ded: 400,
+          max: 600,
           totalCost: 0,
           id: 2
         },
@@ -80,6 +92,7 @@ class App extends React.Component {
           name: 'Aetna Gold Plan',
           premium: 250,
           ded: 800,
+          max: 1000,
           totalCost: 0,
           id: 3
         }
@@ -122,10 +135,10 @@ class App extends React.Component {
           ...this.state.planMonths[monthIndex].events,
           {
             x, y,
-            rawCost: 100,
+            rawCost: this.state.cost,
             calculatedCosts: [
               ...this.state.availablePlans.map(plan => (
-                { planId: plan.id, value: calculateEventCost(100, plan) }
+                { planId: plan.id, value: calculateEventCost(this.state.cost, plan) }
               ))
             ]
           }
@@ -155,20 +168,21 @@ class App extends React.Component {
         <div className="event-section">
           <div className="event-panel">
             <label>{'Estimate event'}</label>
-            <select className="m1">
-              <option>{'Doctor visit'}</option>
-              <option>{'New baby'}</option>
-              <option>{'Medical Perscription'}</option>
-              <option>{'Emergency Room Visit'}</option>
+            <select className="m1" onChange={(e) => this.setState({ cost: events.find(ev => ev.name === e.target.value).cost, selectedEvent: e.target.value })}>
+
+              {events.map(medicalEvent => (
+                <option key={medicalEvent.name}>{medicalEvent.name}</option>
+              ))}
+
             </select>
             <label>{'Estimate cost'}</label>
-            <input type="number" />
+            <input type="number" value={this.state.cost} onChange={(e) => this.setState({ cost: parseInt(e.target.value) })} />
             <p className="help-text">{'Click the months below to simulate events.'}</p>
           </div>
         </div>
 
         <div className="month-container">
-          <h2>{'Enrollment Period'}</h2>
+          <h2>{'Coverage Period'}</h2>
 
           {planMonths.map(month => (
             <Month
@@ -179,7 +193,7 @@ class App extends React.Component {
             />
           ))}
 
-          <div className="total">
+          <div className="total purple">
             {'Estimated Total'}
           </div>
         </div>
@@ -187,7 +201,6 @@ class App extends React.Component {
 
           {availablePlans.map(plan => (
             <div key={plan.id} className="plan">
-              <div className="plan-column">{plan.name}</div>
 
               {planMonths.map(month => (
                 <div key={month.title} className="plan-column m1">
@@ -196,6 +209,7 @@ class App extends React.Component {
               ))}
 
               <div className="plan-column m1 purple">{`$ ${plan.totalCost + planMonths.reduce((acc, m) => (plan.premium + acc), 0)}`}</div>
+              <div className="plan-column">{plan.name}</div>
             </div>
           ))}
         </div>
