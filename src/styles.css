@@ -16,6 +16,38 @@ html, body {
   font-weight: bold;
 }
 
+.mc {
+    width: 110px;
+    background: #fff;
+    padding: 1rem;
+    display: inline-block;
+    border-top: 1px solid #ddd;
+}
+
+.c1 {
+  background-color: #03a9f452;
+}
+
+.c2 {
+  background-color: #0096884d;
+}
+
+.c3 {
+  background-color: #ff98005e;
+}
+
+.top-section {
+  display: flex;
+  background-color: #39485b;
+}
+
+.top-section .panel {
+  border-radius: 3px;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: #fff;
+}
+
 .event-section {
   background-color: #39485b;
   padding-left: 2rem;
@@ -23,16 +55,23 @@ html, body {
   padding-bottom: 2rem;
 }
 
+.totals-container {
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.swatch {
+  border: 1px solid #000;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
 .event-panel {
-    border-radius: 3px;
     font-size: 11px;
-    background: #fff;
-    height: 100px;
-    padding: 1rem;
-    width: 300px;
-    -webkit-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
-    -moz-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
-    box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
+  width: 277px;
 }
 
 .event-panel label {
@@ -63,14 +102,14 @@ html, body {
 
 }
 
+.plan-summary {
+  border-bottom: 1px solid #ddd;
+}
+
 .plan {
   font-size: 12px;
-  border-bottom: 1px solid #ddd;
   padding: 5px;
-  background-color: #fff;
-  -webkit-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
--moz-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
+  text-align: center;
 }
 
 .plan-container .plan-column {
@@ -86,6 +125,10 @@ box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
   display: inline-block;
 }
 
+.total {
+  margin-bottom: 1rem;
+}
+
 .month {
   width: 100px;
   height: 100px;
@@ -93,6 +136,13 @@ box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
   border: 1px solid #ddd;
   border-radius: 3px;
   position: relative;
+  -webkit-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
+-moz-box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
+box-shadow: 1px 2px 15px -4px rgba(107,107,107,1);
+}
+
+.month:hover {
+  cursor: pointer;
 }
 
 .month .title {

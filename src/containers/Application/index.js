@@ -1,17 +1,31 @@
 import React from 'react'
+import ReactTooltip from 'react-tooltip'
 
 
+var formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  // the default value for minimumFractionDigits depends on the currency
+  // and is usually already 2
+});
 
 const Month = ({ title, events, addEvent }) => (
   <div className="month m1" onClick={addEvent}>
     <div className="title">{title}</div>
 
     {events.map(event => (
-      <div
-        key={event.x}
-        className="event"
-        style={{top: event.y, left: event.x}}
-      />
+      <div key={event.x}>
+        <div
+          data-tip
+          data-for={`happyFace${event.x}`}
+          className="event"
+          style={{top: event.y, left: event.x}}
+        />
+        <ReactTooltip id={`happyFace${event.x}`}>
+          <p>{event.name}</p>
+        </ReactTooltip>
+      </div>
     ))}
 
   </div>
@@ -71,9 +85,11 @@ class App extends React.Component {
 
     this.state = {
       cost: 50,
+      eventName: 'Doctor visit',
       availablePlans: [
         {
           name: 'Aetna Bronze Plan',
+          color: "c1",
           premium: 0,
           ded: 5000,
           max: 6000,
@@ -83,16 +99,18 @@ class App extends React.Component {
         {
           name: 'Aetna Silver Plan',
           premium: 150,
-          ded: 400,
-          max: 600,
+          color: "c2",
+          ded: 3500,
+          max: 4500,
           totalCost: 0,
           id: 2
         },
         {
           name: 'Aetna Gold Plan',
+          color: "c3",
           premium: 250,
-          ded: 800,
-          max: 1000,
+          ded: 1000,
+          max: 2000,
           totalCost: 0,
           id: 3
         }
@@ -112,6 +130,38 @@ class App extends React.Component {
         },
         {
           title: 'Feb',
+          events: []
+        },
+        {
+          title: 'Mar',
+          events: []
+        },
+        {
+          title: 'Apr',
+          events: []
+        },
+        {
+          title: 'May',
+          events: []
+        },
+        {
+          title: 'Jun',
+          events: []
+        },
+        {
+          title: 'Jul',
+          events: []
+        },
+        {
+          title: 'Aug',
+          events: []
+        },
+        {
+          title: 'Sept',
+          events: []
+        },
+        {
+          title: 'Oct',
           events: []
         }
       ]
@@ -134,6 +184,7 @@ class App extends React.Component {
         events: [
           ...this.state.planMonths[monthIndex].events,
           {
+            name: this.state.eventName,
             x, y,
             rawCost: this.state.cost,
             calculatedCosts: [
@@ -165,19 +216,37 @@ class App extends React.Component {
 
     return (
       <div>
-        <div className="event-section">
-          <div className="event-panel">
-            <label>{'Estimate event'}</label>
-            <select className="m1" onChange={(e) => this.setState({ cost: events.find(ev => ev.name === e.target.value).cost, selectedEvent: e.target.value })}>
+        <div className="top-section">
+          <div className="panel">
+            <div className="event-panel">
+              <label>{'Estimate event'}</label>
+              <select className="m1" onChange={(e) => this.setState({ eventName: events.find(ev => ev.name === e.target.value).name, cost: events.find(ev => ev.name === e.target.value).cost, selectedEvent: e.target.value })}>
 
-              {events.map(medicalEvent => (
-                <option key={medicalEvent.name}>{medicalEvent.name}</option>
+                {events.map(medicalEvent => (
+                  <option key={medicalEvent.name}>{medicalEvent.name}</option>
+                ))}
+
+              </select>
+              <label>{'Estimate cost'}</label>
+              <input type="number" value={this.state.cost} onChange={(e) => this.setState({ cost: parseInt(e.target.value) })} />
+              <p className="help-text">{'Click the months below to simulate events.'}</p>
+            </div>
+          </div>
+          <div className="panel">
+            <div className="total-panel">
+              <div className="total purple">
+                {'Available Plans & Totals'}
+              </div>
+
+              {availablePlans.map(plan => (
+                <div key={plan.id} className="totals-container plan-summary">
+
+                  <div className="plan-column"><span className={`swatch ${plan.color}`} />{plan.name}</div>
+                  <div className="plan-column m1 purple">{formatter.format(plan.totalCost + planMonths.reduce((acc, m) => (plan.premium + acc), 0))}</div>
+                </div>
               ))}
 
-            </select>
-            <label>{'Estimate cost'}</label>
-            <input type="number" value={this.state.cost} onChange={(e) => this.setState({ cost: parseInt(e.target.value) })} />
-            <p className="help-text">{'Click the months below to simulate events.'}</p>
+            </div>
           </div>
         </div>
 
@@ -185,35 +254,25 @@ class App extends React.Component {
           <h2>{'Coverage Period'}</h2>
 
           {planMonths.map(month => (
-            <Month
-              key={month.title}
-              title={month.title}
-              events={month.events}
-              addEvent={(event) => this.addEvent(event, month.title)}
-            />
-          ))}
+            <div key={month.title} className="mc">
+              <Month
+                key={month.title}
+                title={month.title}
+                events={month.events}
+                addEvent={(event) => this.addEvent(event, month.title)}
+              />
 
-          <div className="total purple">
-            {'Estimated Total'}
-          </div>
-        </div>
-        <div className="plan-container">
-
-          {availablePlans.map(plan => (
-            <div key={plan.id} className="plan">
-
-              {planMonths.map(month => (
-                <div key={month.title} className="plan-column m1">
-                  {`$ ${plan.premium + calculateCost(month, plan)}`}
+              {availablePlans.map(plan => (
+                <div key={plan.id} className={`plan ${plan.color}`}>
+                  {formatter.format(plan.premium + calculateCost(month, plan))}
                 </div>
               ))}
 
-              <div className="plan-column m1 purple">{`$ ${plan.totalCost + planMonths.reduce((acc, m) => (plan.premium + acc), 0)}`}</div>
-              <div className="plan-column">{plan.name}</div>
             </div>
-          ))}
-        </div>
 
+          ))}
+
+        </div>
       </div>
     )
   }
