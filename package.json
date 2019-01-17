@@ -1,9 +1,7 @@
 {
-  "name": "plan-choice-tool",
+  "name": "react-starting-point",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/denvaar/plan-choice-tool.git",
-  "author": "Denver Smith <denverpsmith@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --mode development"
@@ -27,8 +25,8 @@
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "^16.6.0",
-    "react-dom": "^16.6.0",
-    "react-tooltip": "^3.9.0"
+    "react-dom": "^16.6.0"
   }
 }
